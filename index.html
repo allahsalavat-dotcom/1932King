@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>1932</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+</head>
+<body oncontextmenu="return false;">
+    <div class="crt">
+        <div class="scanlines"></div>
+        <div class="glitch" data-text="1932">1932</div>
+        <div class="blood">...</div>
+        <div class="message">SENİ GÖRÜYORUM</div>
+        <div class="static"></div>
+    </div>
+
+    <audio id="scream" autoplay loop>
+        <source src="https://freesound.org/data/previews/276/276184_5260876-lq.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Rastgele glitch ve kan efekti
+        setInterval(() => {
+            document.querySelector('.glitch').style.animation = 'none';
+            setTimeout(() => {
+                document.querySelector('.glitch').style.animation = '';
+            }, 100);
+        }, Math.random() * 4000 + 1000);
+
+        // Fareyi takip eden kan damlası
+        document.addEventListener('mousemove', (e) => {
+            const blood = document.createElement('div');
+            blood.classList.add('blood-drop');
+            blood.style.left = e.pageX + 'px';
+            blood.style.top = e.pageY + 'px';
+            document.body.appendChild(blood);
+            setTimeout(() => blood.remove(), 3000);
+        });
+    </script>
+</body>
+</html>
