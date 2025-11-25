@@ -1,43 +1,147 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1932</title>
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { 
+            background:#000; 
+            overflow:hidden; 
+            height:100vh; 
+            font-family:'Creepster', cursive;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="28" font-size="32">💀</text></svg>'), auto;
+        }
+        .crt::before {
+            content:"";
+            display:block;
+            position:fixed;
+            top:0; left:0; right:0; bottom:0;
+            background:linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%), 
+                        linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06));
+            z-index:2;
+            background-size:100% 2px, 3px 100%;
+            pointer-events:none;
+        }
+        .scanlines {
+            position:fixed;
+            top:0; left:0; right:0; bottom:0;
+            background:repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, transparent 1px, transparent 2px, rgba(0,0,0,0.15) 3px);
+            animation:scan 7s linear infinite;
+            pointer-events:none;
+        }
+        @keyframes scan { 0%{transform:translateY(0)} 100%{transform:translateY(10px)} }
+
+        .glitch {
+            position:absolute;
+            top:50%; left:50%;
+            transform:translate(-50%,-50%);
+            font-size:18vw;
+            color:#fff;
+            text-shadow:0.05em 0 0 #f00, -0.03em -0.04em 0 #0f0, 0.04em 0.05em 0 #00f;
+            animation:glitch 1.5s infinite;
+        }
+        .glitch::before,.glitch::after{
+            content:'1932';
+            position:absolute;
+            top:0; left:0; width:100%; height:100%;
+        }
+        .glitch::before{
+            animation:glitch1 0.6s infinite;
+            color:#f00;
+            clip-path:polygon(0 0,100% 0,100% 40%,0 40%);
+        }
+        .glitch::after{
+            animation:glitch2 0.6s infinite;
+            color:#0f0;
+            clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%);
+        }
+        @keyframes glitch{
+            0%,100%{transform:translate(-50%,-50%);}
+            20%{transform:translate(-52%,-48%);}
+            40%{transform:translate(-48%,-52%);}
+            60%{transform:translate(-52%,-52%);}
+            80%{transform:translate(-48%,-48%);}
+        }
+        @keyframes glitch1{
+            0%,100%{transform:translate(0);}
+            33%{transform:translate(-8px,8px);}
+            66%{transform:translate(8px,-8px);}
+        }
+        @keyframes glitch2{
+            0%,100%{transform:translate(0);}
+            33%{transform:translate(8px,-8px);}
+            66%{transform:translate(-8px,8px);}
+        }
+
+        .message{
+            position:absolute;
+            bottom:10%;
+            left:50%;
+            transform:translateX(-50%);
+            font-size:5vw;
+            color:#400;
+            animation:flicker 0.4s infinite alternate;
+        }
+        @keyframes flicker{ from{opacity:1} to{opacity:0.2} }
+
+        .blood-drop{
+            position:fixed;
+            width:30px; height:30px;
+            background:radial-gradient(#300 20%,#900);
+            border-radius:50%;
+            pointer-events:none;
+            animation:drip 4s linear forwards;
+            z-index:1;
+        }
+        @keyframes drip{
+            0%{transform:translateY(-100px) scale(0); opacity:1;}
+            100%{transform:translateY(110vh) scale(3); opacity:0;}
+        }
+
+        .static{
+            position:fixed;
+            inset:0;
+            background:url('https://i.imgur.com/K2YZ8tk.gif') repeat;
+            opacity:0.08;
+            mix-blend-mode:screen;
+            pointer-events:none;
+        }
+    </style>
 </head>
 <body oncontextmenu="return false;">
+
     <div class="crt">
         <div class="scanlines"></div>
         <div class="glitch" data-text="1932">1932</div>
-        <div class="blood">...</div>
-        <div class="message">SENİ GÖRÜYORUM</div>
+        <div class="message">SENİ GÖRÜYORUM...</div>
         <div class="static"></div>
     </div>
 
-    <audio id="scream" autoplay loop>
+    <!-- Korku sesi (otomatik çalar, loop) -->
+    <audio autoplay loop>
         <source src="https://freesound.org/data/previews/276/276184_5260876-lq.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Fareyi takip eden kan damlaları -->
     <script>
-        // Rastgele glitch ve kan efekti
+        document.addEventListener('mousemove', e => {
+            const drop = document.createElement('div');
+            drop.classList.add('blood-drop');
+            drop.style.left = (e.pageX - 15) + 'px';
+            drop.style.top = (e.pageY - 15) + 'px';
+            document.body.appendChild(drop);
+            setTimeout(() => drop.remove(), 4000);
+        });
+
+        // Rastgele ekstra glitch
         setInterval(() => {
             document.querySelector('.glitch').style.animation = 'none';
-            setTimeout(() => {
-                document.querySelector('.glitch').style.animation = '';
-            }, 100);
-        }, Math.random() * 4000 + 1000);
-
-        // Fareyi takip eden kan damlası
-        document.addEventListener('mousemove', (e) => {
-            const blood = document.createElement('div');
-            blood.classList.add('blood-drop');
-            blood.style.left = e.pageX + 'px';
-            blood.style.top = e.pageY + 'px';
-            document.body.appendChild(blood);
-            setTimeout(() => blood.remove(), 3000);
-        });
+            setTimeout(() => document.querySelector('.glitch').style.animation = '', 100);
+        }, Math.random()*3000 + 1000);
     </script>
 </body>
 </html>
